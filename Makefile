@@ -1,4 +1,4 @@
 all: main
 
-main:
-  gcc -o main main.c
+main: main.c
+	gcc -o main main.c -Wall -Wextra
