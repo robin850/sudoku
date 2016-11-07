@@ -33,7 +33,7 @@ int *recupererGrille(char *nom_fichier, int *grille) {
 
 	int d, n = 0;
 
-  while (fscanf(fichier, "%1d", &d) == 1) {
+  while (fscanf(fichier, "%1d", &d) == 1 && n < 81) {
    	grille[n] = d;
    	n++;
   }
