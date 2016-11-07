@@ -28,11 +28,10 @@ int nombreLignes(char *nom_fichier) {
 	return nbLignes;
 }
 
-int *recupererGrille(char *nom_fichier) {
+int *recupererGrille(char *nom_fichier, int *grille) {
   FILE *fichier = fopen(nom_fichier, "r");
 
 	int d, n = 0;
-	int *grille = (int*)malloc(81 * sizeof(int));
 
   while (fscanf(fichier, "%1d", &d) == 1) {
    	grille[n] = d;
@@ -125,9 +124,12 @@ int main(int argc, char** argv) {
   int i;
   bool  verbose;
   float time_alert;
+
   char nom_fichier[] = "grilles.txt";
 
+  int *grille  = (int*)malloc(81 * sizeof(int));
   int nbLignes = nombreLignes(nom_fichier);
+
   printf("Nombres de grilles dans le fichier : %d\n", nbLignes);
 
   if (argc == 1 || option(argc, argv, "--help"))
@@ -141,8 +143,8 @@ int main(int argc, char** argv) {
   int *tab = (int *)malloc(nbLignes * sizeof(int));
 
   for (i = 0; i < nbLignes; i++) {
-    tab = recupererGrille(nom_fichier);
-    afficherGrille(tab);
+    recupererGrille(nom_fichier, grille);
+    afficherGrille(grille);
   }
 
   return 0;
