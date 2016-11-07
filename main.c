@@ -28,10 +28,12 @@ int nombreLignes(char *nom_fichier) {
 	return nbLignes;
 }
 
-int *recupererGrille(char *nom_fichier, int *grille) {
+int *recupererGrille(char *nom_fichier, int *grille, int ligne) {
   FILE *fichier = fopen(nom_fichier, "r");
 
 	int d, n = 0;
+
+  fseek(fichier, ligne*81, SEEK_CUR);
 
   while (fscanf(fichier, "%1d", &d) == 1 && n < 81) {
    	grille[n] = d;
@@ -125,7 +127,7 @@ int main(int argc, char** argv) {
   bool  verbose;
   float time_alert;
 
-  char nom_fichier[] = "grilles.txt";
+  char nom_fichier[] = "grille.txt";
 
   int *grille  = (int*)malloc(81 * sizeof(int));
   int nbLignes = nombreLignes(nom_fichier);
@@ -143,7 +145,7 @@ int main(int argc, char** argv) {
   int *tab = (int *)malloc(nbLignes * sizeof(int));
 
   for (i = 0; i < nbLignes; i++) {
-    recupererGrille(nom_fichier, grille);
+    recupererGrille(nom_fichier, grille, i);
     afficherGrille(grille);
   }
 
