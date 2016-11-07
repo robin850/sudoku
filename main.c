@@ -45,16 +45,20 @@ int *recupererGrille(char *nom_fichier) {
 }
 
 void afficherGrille(int *grille) {
-	int i = 0;
-	printf("++---+---+---++\n");
-	do
-    {
-        printf("%d - ", i);
-        printf("%d \n", grille[i]);
-        i++;
-    } while (i < 81);
-    printf("++---+---+---++\n");
-    printf("\n\n");
+	int i;
+  printf("+-----------+-----------+-----------+\n");
+
+  for (i = 0; i < 81; i++) {
+    if (i % 9 == 0 && i != 0)
+      printf("|\n");
+    if (i == 27 || i == 54)
+      printf("+-----------+-----------+-----------+\n");
+
+    printf("| %d ", grille[i]);
+
+  }
+
+  printf("|\n+-----------+-----------+-----------+\n");
 }
 
 
