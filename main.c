@@ -68,6 +68,25 @@ void solve (char *grille)
 	return;
 }
 
+int **regions(int *grille) {
+  int ligne, i, j, region;
+  int **regions = (int **)malloc(9 * sizeof(int *));
+
+  for (region = 0; region < 9; region++) {
+    regions[region] = (int *)malloc(9 * sizeof(int *));
+    i = 0;
+
+    for (ligne = 0, i = 0; ligne < 3; ligne++) {
+      regions[region][i]   = grille[ligne * 9 + region * 3];
+      regions[region][++i] = grille[ligne * 9 + 1 + region * 3];
+      regions[region][++i] = grille[ligne * 9 + 2 + region * 3];
+      i++;
+    }
+  }
+
+  return regions;
+}
+
 void verifierFicher() {
   // Checker si c'est la bonne taille
   // Si elle est valide de base
