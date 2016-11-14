@@ -3,14 +3,12 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "grille.h"
+
 typedef struct {
 	unsigned int ligne[3];
 	unsigned int colonne[3];
 } region;
-
-typedef struct {
-	region regions[9];
-} grille;
 
 int nombreLignes(char *nom_fichier) {
   FILE *fichier = fopen(nom_fichier, "r");
@@ -28,63 +26,9 @@ int nombreLignes(char *nom_fichier) {
 	return nbLignes;
 }
 
-int *recupererGrille(char *nom_fichier, int *grille, int ligne) {
-  FILE *fichier = fopen(nom_fichier, "r");
-
-	int d, n = 0;
-
-  fseek(fichier, ligne*81, SEEK_CUR);
-
-  while (fscanf(fichier, "%1d", &d) == 1 && n < 81) {
-   	grille[n] = d;
-   	n++;
-  }
-
-  fclose(fichier);
-
-  return grille;
-}
-
-void afficherGrille(int *grille) {
-	int i;
-  printf("+-----------+-----------+-----------+\n");
-
-  for (i = 0; i < 81; i++) {
-    if (i % 9 == 0 && i != 0)
-      printf("|\n");
-    if (i == 27 || i == 54)
-      printf("+-----------+-----------+-----------+\n");
-
-    printf("| %d ", grille[i]);
-
-  }
-
-  printf("|\n+-----------+-----------+-----------+\n");
-}
-
-
 void solve (char *grille)
 {
 	return;
-}
-
-int **regions(int *grille) {
-  int ligne, i, j, region;
-  int **regions = (int **)malloc(9 * sizeof(int *));
-
-  for (region = 0; region < 9; region++) {
-    regions[region] = (int *)malloc(9 * sizeof(int *));
-    i = 0;
-
-    for (ligne = 0, i = 0; ligne < 3; ligne++) {
-      regions[region][i]   = grille[ligne * 9 + region * 3];
-      regions[region][++i] = grille[ligne * 9 + 1 + region * 3];
-      regions[region][++i] = grille[ligne * 9 + 2 + region * 3];
-      i++;
-    }
-  }
-
-  return regions;
 }
 
 void verifierFicher() {
