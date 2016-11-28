@@ -57,6 +57,8 @@ void afficherOptions(char *name) {
   printf("--verbose:   Solve en détaillant les operations.\n");
   printf("--timeAlert: Temps en millisecondes pour arrêter la resolution\n");
   printf("             de la grille si le temps donne est depasse.\n");
+
+  exit(0);
 }
 
 /**
@@ -92,14 +94,14 @@ int main(int argc, char** argv) {
   bool  verbose;
   float time_alert;
 
-  char nom_fichier[] = "grille.txt";
+  if (argc == 1 || option(argc, argv, "--help"))
+    afficherOptions(argv[0]);
+
+  char *nom_fichier = argv[1];
 
   int nbLignes = nombreLignes(nom_fichier);
 
   printf("Nombres de grilles dans le fichier : %d\n", nbLignes);
-
-  if (argc == 1 || option(argc, argv, "--help"))
-    afficherOptions(argv[0]);
 
   verbose = option(argc, argv, "--verbose");
 
