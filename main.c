@@ -27,54 +27,37 @@ int nombreLignes(char *nom_fichier) {
 	return nbLignes;
 }
 
-int *recupererGrille(char *nom_fichier, int *grille, int ligne) {
-  FILE *fichier = fopen(nom_fichier, "r");
-
-  int d, n = 0;
-
-  fseek(fichier, ligne*81, SEEK_CUR);
-
-  while (fscanf(fichier, "%1d", &d) == 1 && n < 81) {
-    grille[n] = d;
-    n++;
-  }
-
-  fclose(fichier);
-
-  return grille;
-}
-
-void remplirRandom (int *grille)
-{
+void remplirRandom(Grille *grille) {
   srand(time(NULL));
   int i, v;
   for (i = 0; i < 81; i++)
-    if (grille[i] == 0)
-    {
-      do
-      {
+    if (grille->tableau[i] == 0) {
+      do {
         v = (rand() %10);
-      }while(v == 0);
-      grille[i] = v;
+      } while (v == 0);
+
+      grille->tableau[i] = v;
     }
 }
 
-bool estDans(int *tab, int i)
-{
+bool estDans(int *tab, int i) {
   int j;
+
   for (j = 0; j < 9; j++)
     if (tab[j] == i)
       return true;
+
   return false;
 }
 
-int valeursRegions (int **regions)
-{
+int **valeursRegions(int **regions) {
   int i, j, k;
-  int valeurs[] = {1,2,3,4,5,6,7,8,9};
-  int *valeursRegs = (int*)malloc(9* sizeof(int));
+  int valeurs[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  int **valeursRegs = (int **)malloc(9 * sizeof(int *));
+
   for (i = 0; i < 9; i++)
     memcpy(valeursRegs[i], valeurs, sizeof(valeurs));
+
   for (i = 0; i < 9; i++) //Région
   {
     for (j = 0; j < 9; j++) //Case
@@ -86,14 +69,6 @@ int valeursRegions (int **regions)
   }
   return valeursRegs;
 }
-
-
-
-// void checkValeurs (int *grille)
-// {
-//   int valeursPossibles[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-//   int ValeursRegions[] = valeursRegions(grille);
-// }
 
 
 void verifierFicher() {
@@ -155,7 +130,7 @@ void timeAlert(int argc, char** argv, float *valeur) {
 int main(int argc, char** argv) {
   Grille *grille = (Grille *)malloc(sizeof(Grille));
 
-  int i, j;
+  int i = 0, j;
   bool  verbose;
   float time_alert;
 
@@ -172,31 +147,25 @@ int main(int argc, char** argv) {
   if (option(argc, argv, "--timeAlert"))
     timeAlert(argc, argv, &time_alert);
 
-  recupererGrille(nom_fichier, grille, i);
+  charger(nom_fichier, grille, i);
   printf("Grille %d\n", i);
-  afficherGrille(grille);
+  afficher(grille);
   printf("\n\n");
 
-  int regs = regions(grille);
+  int **regs = regions(grille);
   remplirRandom(grille);
-  afficherGrille(grille);
-  int valeursReg = valeursRegions(regs);
+  afficher(grille);
+
+  // int **valeursReg = valeursRegions(regs);
+
   for (i = 0; i < 9; i++)
     for (j = 0; j < 9; j++)
       printf("%d -", i);
 
-
-  int *tab = (int *)malloc(nbLignes * sizeof(int));
-
   for (i = 0; i < nbLignes; i++) {
     charger(nom_fichier, grille, i);
-    afficherGrille(grille);
+    afficher(grille);
   }
-  /*for (i = 0; i < nbLignes; i++) {
-    recupererGrille(nom_fichier, grille, i);
-    printf("Grille %d\n", i);
-    printf("\n\n");
-  }*/
 
   return 0;
 }
