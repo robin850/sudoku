@@ -9,8 +9,10 @@ typedef struct {
   int lignes[9][9];
   int colonnes[9][9];
   int tableau[81];
-} grille;
+} Grille;
 
-int *recupererGrille(char *nom_fichier, int *grille, int ligne);
+void charger(char *nom_fichier, Grille *grille, int ligne);
+
+void afficher(Grille *grille);
 
 #endif

@@ -1,6 +1,6 @@
 #include "grille.h"
 
-int *recupererGrille(char *nom_fichier, int *grille, int ligne) {
+void charger(char *nom_fichier, Grille *grille, int ligne) {
   FILE *fichier = fopen(nom_fichier, "r");
 
   int d, n = 0;
@@ -8,13 +8,11 @@ int *recupererGrille(char *nom_fichier, int *grille, int ligne) {
   fseek(fichier, ligne*81, SEEK_CUR);
 
   while (fscanf(fichier, "%1d", &d) == 1 && n < 81) {
-    grille[n] = d;
+    grille->tableau[n] = d;
     n++;
   }
 
   fclose(fichier);
-
-  return grille;
 }
 
 int **regions(int *grille) {
@@ -36,7 +34,7 @@ int **regions(int *grille) {
   return regions;
 }
 
-void afficherGrille(int *grille) {
+void afficherGrille(Grille *grille) {
   int i;
   printf("+-----------+-----------+-----------+\n");
 
@@ -46,7 +44,7 @@ void afficherGrille(int *grille) {
     if (i == 27 || i == 54)
       printf("+-----------+-----------+-----------+\n");
 
-    printf("| %d ", grille[i]);
+    printf("| %d ", grille->tableau[i]);
 
   }
 

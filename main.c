@@ -86,13 +86,14 @@ void timeAlert(int argc, char** argv, float *valeur) {
 }
 
 int main(int argc, char** argv) {
+  Grille *grille = (Grille *)malloc(sizeof(Grille));
+
   int i;
   bool  verbose;
   float time_alert;
 
   char nom_fichier[] = "grille.txt";
 
-  int *grille  = (int*)malloc(81 * sizeof(int));
   int nbLignes = nombreLignes(nom_fichier);
 
   printf("Nombres de grilles dans le fichier : %d\n", nbLignes);
@@ -108,7 +109,7 @@ int main(int argc, char** argv) {
   int *tab = (int *)malloc(nbLignes * sizeof(int));
 
   for (i = 0; i < nbLignes; i++) {
-    recupererGrille(nom_fichier, grille, i);
+    charger(nom_fichier, grille, i);
     afficherGrille(grille);
   }
 
