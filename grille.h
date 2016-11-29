@@ -19,8 +19,6 @@ typedef struct {
 
 void charger(char *nom_fichier, Grille *grille, int ligne);
 
-int **regions(Grille *grille);
-
 void afficher(Grille *grille);
 
 #endif

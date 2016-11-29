@@ -48,25 +48,6 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
   fclose(fichier);
 }
 
-int **regions(Grille *grille) {
-  int ligne, i, region;
-  int **regions = (int **)malloc(9 * sizeof(int *));
-
-  for (region = 0; region < 9; region++) {
-    regions[region] = (int *)malloc(9 * sizeof(int *));
-    i = 0;
-
-    for (ligne = 0, i = 0; ligne < 3; ligne++) {
-      regions[region][i]  = grille->tableau[ligne * 9 + region * 3].valeur;
-      regions[region][++i] = grille->tableau[ligne * 9 + 1 + region * 3].valeur;
-      regions[region][++i] = grille->tableau[ligne * 9 + 2 + region * 3].valeur;
-      i++;
-    }
-  }
-
-  return regions;
-}
-
 void afficher(Grille *grille) {
   int i;
   printf("+-----------+-----------+-----------+\n");
