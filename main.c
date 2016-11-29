@@ -151,12 +151,6 @@ int main(int argc, char** argv) {
   remplirRandom(grille);
   afficher(grille);
 
-  // int **valeursReg = valeursRegions(regs);
-
-  for (i = 0; i < 9; i++)
-    for (j = 0; j < 9; j++)
-      printf("%d -", i);
-
   for (i = 0; i < nbLignes; i++) {
     charger(nom_fichier, grille, i);
     afficher(grille);
