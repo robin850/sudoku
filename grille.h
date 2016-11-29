@@ -8,7 +8,7 @@
 typedef struct {
 	int valeur;
 	bool deBase;
-}Case;
+} Case;
 
 typedef struct {
   Case regions[9][9];
@@ -18,6 +18,8 @@ typedef struct {
 } Grille;
 
 void charger(char *nom_fichier, Grille *grille, int ligne);
+
+bool estValide(Grille *grille);
 
 void afficher(Grille *grille);
 

@@ -48,6 +48,68 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
   fclose(fichier);
 }
 
+void zero(int *tableau) {
+  int i;
+
+  for (i = 0; i < 9; i++)
+    tableau[i] = 0;
+}
+
+bool estValide(Grille *grille) {
+  int i, j, valeur;
+  int *check = (int *)malloc(10 * sizeof(int *));
+
+  // Vérification en lignes
+  for (i = 0; i < 9; i++) {
+    zero(check);
+
+    for (j = 0; j < 9; j++)
+      valeur = grille->lignes[i][j].valeur;
+
+      if (valeur == 0)
+        continue;
+
+      if (check[valeur])
+        return false;
+      else
+        check[valeur]++;
+  }
+
+  // Vérification en colonnes
+  for (i = 0; i < 9; i++) {
+    zero(check);
+
+    for (j = 0; j < 9; j++)
+      valeur = grille->colonnes[i][j].valeur;
+
+      if (valeur == 0)
+        continue;
+
+      if (check[valeur])
+        return false;
+      else
+        check[valeur]++;
+  }
+
+  // Vérification en régions
+  for (i = 0; i < 9; i++) {
+    zero(check);
+
+    for (j = 0; j < 9; j++)
+      valeur = grille->regions[i][j].valeur;
+
+      if (valeur == 0)
+        continue;
+
+      if (check[valeur])
+        return false;
+      else
+        check[valeur]++;
+  }
+
+  return true;
+}
+
 void afficher(Grille *grille) {
   int i, j;
 
