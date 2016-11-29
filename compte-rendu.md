@@ -89,7 +89,7 @@ Le *benchmark* a été implémenté en C et exécuté 20 fois et les résultats 
 
 | Algorithme | Moyenne | Écart type |
 |------------|---------|------------|
-| Tableau 9*3*3 | 1 531 541 i/s | ± 3.789% |
+| Tableau 9\*3\*3 | 1 531 541 i/s | ± 3.789% |
 | Représentations multiples | 1 593 707 i/s | ± 2.87% |
 
 La représentation en multiples tableau de la grille permet de réaliser près de 61 705 itération de plus par seconde en moyenne.
