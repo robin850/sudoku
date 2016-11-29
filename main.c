@@ -6,11 +6,6 @@
 
 #include "grille.h"
 
-typedef struct {
-	unsigned int ligne[3];
-	unsigned int colonne[3];
-} region;
-
 int nombreLignes(char *nom_fichier) {
   FILE *fichier = fopen(nom_fichier, "r");
 
