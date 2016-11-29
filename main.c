@@ -22,16 +22,6 @@ int nombreLignes(char *nom_fichier) {
 	return nbLignes;
 }
 
-void estDeBase(Grille *grille)
-{
-  int i;
-  for (i = 0; i < 81; i++)
-    if (grille->tableau[i].valeur == 0)
-      grille->tableau[i].deBase = false;
-    else
-      grille->tableau[i].deBase = true;
-}
-
 void remplirRandom(Grille *grille) {
   srand(time(NULL));
   int i, v;
@@ -170,7 +160,7 @@ void timeAlert(int argc, char** argv, float *valeur) {
 int main(int argc, char** argv) {
   Grille *grille = (Grille *)malloc(sizeof(Grille));
 
-  int i = 1, j;
+  int i = 1;
   bool  verbose;
   float time_alert;
 
@@ -192,7 +182,6 @@ int main(int argc, char** argv) {
   afficher(grille);
   printf("\n\n");
 
-  estDeBase(grille);
   remplirRandom(grille);
   afficher(grille);
   int idRegion = 8;
