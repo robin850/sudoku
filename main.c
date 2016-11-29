@@ -50,9 +50,9 @@ int nbErreurRegion(Grille *grille, int idRegion)
   int *region = (int*)malloc(9*sizeof(int));
 
   //Récupère la région demandée dans un tableau
-  // if(idRegion == 1 || idRegion == 2 || idRegion == 3) 
+  // if(idRegion == 1 || idRegion == 2 || idRegion == 3)
   //   j = 0;
-  // else if(idRegion == 4 || idRegion == 5 || idRegion == 6) 
+  // else if(idRegion == 4 || idRegion == 5 || idRegion == 6)
   //   j = 2;
   // else
   //   j = 4;
@@ -192,7 +192,6 @@ int main(int argc, char** argv) {
   afficher(grille);
   printf("\n\n");
 
-  int **regs = regions(grille);
   estDeBase(grille);
   remplirRandom(grille);
   afficher(grille);

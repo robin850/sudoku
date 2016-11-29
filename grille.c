@@ -49,18 +49,23 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
 }
 
 void afficher(Grille *grille) {
-  int i;
-  printf("+-----------+-----------+-----------+\n");
+  int i, j;
 
-  for (i = 0; i < 81; i++) {
-    if (i % 9 == 0 && i != 0)
-      printf("|\n");
-    if (i == 27 || i == 54)
-      printf("+-----------+-----------+-----------+\n");
+  for (i = 0; i < 9; i++) {
+    if (i % 3 == 0)
+      printf("\n+---------+---------+---------+\n");
+    else
+      printf("\n");
 
-    printf("| %d ", grille->tableau[i].valeur);
+    for (j = 0; j < 9; j++) {
+      if (j % 3 == 0)
+        printf("|");
 
+      printf(" %d ", grille->lignes[i][j].valeur);
+    }
+
+    printf("|");
   }
 
-  printf("|\n+-----------+-----------+-----------+\n");
+  printf("\n+---------+---------+---------+\n");
 }
