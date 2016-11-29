@@ -61,7 +61,9 @@ bool estValide(Grille *grille) {
   int i, j, valeur;
   int *check = (int *)malloc(10 * sizeof(int *));
 
-  // Vérification en lignes
+  // +------------------------+
+  // | Vérification en lignes |
+  // +------------------------+
   for (i = 0; i < 9; i++) {
     zero(check);
 
@@ -77,7 +79,9 @@ bool estValide(Grille *grille) {
         check[valeur]++;
   }
 
-  // Vérification en colonnes
+  // +--------------------------+
+  // | Vérification en colonnes |
+  // +--------------------------+
   for (i = 0; i < 9; i++) {
     zero(check);
 
@@ -93,7 +97,9 @@ bool estValide(Grille *grille) {
         check[valeur]++;
   }
 
-  // Vérification en régions
+  // +-------------------------+
+  // | Vérification en régions |
+  // +-------------------------+
   for (i = 0; i < 9; i++) {
     zero(check);
 
