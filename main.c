@@ -22,17 +22,62 @@ int nombreLignes(char *nom_fichier) {
 	return nbLignes;
 }
 
+void estDeBase(Grille *grille)
+{
+  int i;
+  for (i = 0; i < 81; i++)
+    if (grille->tableau[i].valeur == 0)
+      grille->tableau[i].deBase = false;
+    else
+      grille->tableau[i].deBase = true;
+}
+
 void remplirRandom(Grille *grille) {
   srand(time(NULL));
   int i, v;
   for (i = 0; i < 81; i++)
-    if (grille->tableau[i] == 0) {
+    if (grille->tableau[i].deBase == false) {
       do {
         v = (rand() %10);
       } while (v == 0);
-
-      grille->tableau[i] = v;
+      grille->tableau[i].valeur = v;
     }
+}
+
+int nbErreurRegion(Grille *grille, int idRegion)
+{
+  int i = 0, j, nbErreur = 0, valeurs[9] = {1,2,3,4,5,6,7,8,9};
+  int *region = (int*)malloc(9*sizeof(int));
+
+  //Récupère la région demandée dans un tableau
+  // if(idRegion == 1 || idRegion == 2 || idRegion == 3) 
+  //   j = 0;
+  // else if(idRegion == 4 || idRegion == 5 || idRegion == 6) 
+  //   j = 2;
+  // else
+  //   j = 4;
+
+  // while(i<9)
+  // {
+  //   region[i]  = grille->tableau[j*9 + (idRegion*3)-3].valeur;
+  //   region[++i] = grille->tableau[j*9 + (idRegion*3)-2].valeur;
+  //   region[++i] = grille->tableau[j*9 + (idRegion*3)-1].valeur;
+  //   i++;
+  //   j++;
+  // }
+
+  //Met les valeurs à 0 quand il la trouve dans la région
+  for(i = 0; i < 9; i++)
+    for(j = 0; j < 9; j++)
+     if(region[i] == valeurs[j])
+        valeurs[j] = 0;
+
+  //Compte les erreurs
+  for(i = 0; i < 9; i++)
+    if(valeurs[i] != 0)
+      nbErreur++;
+
+  return nbErreur;
 }
 
 bool estDans(int *tab, int i) {
@@ -125,7 +170,7 @@ void timeAlert(int argc, char** argv, float *valeur) {
 int main(int argc, char** argv) {
   Grille *grille = (Grille *)malloc(sizeof(Grille));
 
-  int i = 0, j;
+  int i = 1, j;
   bool  verbose;
   float time_alert;
 
@@ -148,8 +193,12 @@ int main(int argc, char** argv) {
   printf("\n\n");
 
   int **regs = regions(grille);
+  estDeBase(grille);
   remplirRandom(grille);
   afficher(grille);
+  int idRegion = 8;
+  int nbErreursRegion = nbErreurRegion(grille, idRegion);
+  printf("%d erreurs dans la région %d.\n", nbErreursRegion, idRegion);
 
   for (i = 0; i < nbLignes; i++) {
     charger(nom_fichier, grille, i);

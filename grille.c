@@ -9,7 +9,7 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
   fseek(fichier, ligne*81, SEEK_CUR);
 
   while (fscanf(fichier, "%1d", &d) == 1 && n < 81) {
-    grille->tableau[n] = d;
+    grille->tableau[n].valeur = d;
     n++;
   }
 
@@ -57,9 +57,9 @@ int **regions(Grille *grille) {
     i = 0;
 
     for (ligne = 0, i = 0; ligne < 3; ligne++) {
-      regions[region][i]   = grille->tableau[ligne * 9 + region * 3];
-      regions[region][++i] = grille->tableau[ligne * 9 + 1 + region * 3];
-      regions[region][++i] = grille->tableau[ligne * 9 + 2 + region * 3];
+      regions[region][i]  = grille->tableau[ligne * 9 + region * 3].valeur;
+      regions[region][++i] = grille->tableau[ligne * 9 + 1 + region * 3].valeur;
+      regions[region][++i] = grille->tableau[ligne * 9 + 2 + region * 3].valeur;
       i++;
     }
   }
@@ -77,7 +77,7 @@ void afficher(Grille *grille) {
     if (i == 27 || i == 54)
       printf("+-----------+-----------+-----------+\n");
 
-    printf("| %d ", grille->tableau[i]);
+    printf("| %d ", grille->tableau[i].valeur);
 
   }
 
