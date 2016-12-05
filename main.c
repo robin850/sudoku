@@ -60,7 +60,7 @@ int nbErreursRegion(Grille *grille, int idRegion)
   //Création de la région demandée
   int *region = (int*)malloc(9*sizeof(int));
   for (i = 0; i < 9; i++)
-    region[i] = grille->regions[idRegion-1][i].valeur;
+    region[i] = grille->regions[idRegion][i].valeur;
 
   //Met les valeurs à 0 quand il la trouve dans la région
   for(i = 0; i < 9; i++)
@@ -113,7 +113,7 @@ int *nbErreursColonnes(Grille *grille)
 
     for (j = 0; j < 9; j++) //pour chaque caractère
       for (k = 0; k < 9; k++) //pour chaque valeur
-        if (grille->lignes[i][j].valeur == valeurs[k])
+        if (grille->lignes[j][i].valeur == valeurs[k])
           valeurs[k] = 0;
 
     for(k = 0; k < 9; k++)
@@ -141,23 +141,19 @@ int maxErreurs(int *nbErreursLigne, int *nbErreursColonne)
   max[7] = nbErreursLigne[6] + nbErreursLigne[7] + nbErreursLigne[8] + nbErreursColonne[3] + nbErreursColonne[4] + nbErreursColonne[5];
   max[8] = nbErreursLigne[6] + nbErreursLigne[7] + nbErreursLigne[8] + nbErreursColonne[6] + nbErreursColonne[7] + nbErreursColonne[8];
 
-  // for (i = 0; i < 9; i++)
-  //   printf("%d ", max[i]);
-
-  // printf("\n");
-
   int maxi = max[0];
-  int idRegion = 1;
-  for (i = 1; i < 9; i++)
-  {
+  int idRegion = 0;
+
+  for (i = 1; i < 9; i++) {
     if(maxi < max[i])
     {
       maxi = max[i];
-      idRegion = i+1;
+      idRegion = i;
     }
-    if(maxi == 0)
-      return 0;
   }
+
+  if(maxi == 0)
+    return -1;
 
   return idRegion;
 }
@@ -168,34 +164,33 @@ void remplirRandomRegion(Grille *grille, int idRegion)
   Case *region = (Case*)malloc(9*sizeof(Case));
   for (i = 0; i < 9; i++)
   {
-    region[i].valeur = grille->regions[idRegion-1][i].valeur;
-    region[i].deBase = grille->regions[idRegion-1][i].deBase;
+    region[i].valeur = grille->regions[idRegion][i].valeur;
+    region[i].deBase = grille->regions[idRegion][i].deBase;
   }
 
   srand(time(NULL));
   int v;
 
   for (i = 0; i < 9; i++)
-    if(region[i].deBase == false)
-    {
-      do
-      {
+    if (region[i].deBase == false) {
+      do {
         v = rand() % 10;
-      }while(v == 0);
+      } while (v == 0);
+
       region[i].valeur = v;
     }
 
   //Rempli grille->lignes
-  if (idRegion-1 == 0 || idRegion-1 == 3 || idRegion-1 == 6)
+  if (idRegion == 0 || idRegion == 3 || idRegion == 6)
     colonne = 0;
-  else if (idRegion-1 == 1 || idRegion-1 == 4 || idRegion-1 == 7)
+  else if (idRegion == 1 || idRegion == 4 || idRegion == 7)
     colonne = 3;
   else
     colonne = 6;
 
-  if (idRegion-1 < 3)
+  if (idRegion < 3)
     ligne = 0;
-  else if (idRegion-1 < 6)
+  else if (idRegion < 6)
     ligne = 3;
   else
     ligne = 6;
@@ -217,27 +212,6 @@ bool estDans(int *tab, int i) {
 
   return false;
 }
-
-int **valeursRegions(int **regions) {
-  int i, j, k;
-  int valeurs[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-  int **valeursRegs = (int **)malloc(9 * sizeof(int *));
-
-  for (i = 0; i < 9; i++)
-    memcpy(valeursRegs[i], valeurs, sizeof(valeurs));
-
-  for (i = 0; i < 9; i++) //Région
-  {
-    for (j = 0; j < 9; j++) //Case
-    {
-      for(k = 0; k < 9; k++) //Valeur du tableau
-        if(estDans(valeursRegs[k], regions[i][j]))
-          valeursRegs[k] = 0;
-    }
-  }
-  return valeursRegs;
-}
-
 
 void verifierFicher() {
   // Checker si c'est la bonne taille
@@ -316,8 +290,6 @@ int main(int argc, char** argv) {
     timeAlert(argc, argv, &time_alert);
 
 
-
-
   //Chargement de la grille 0
   charger(nom_fichier, grille, i);
   printf("Grille %d\n", i);
@@ -329,19 +301,18 @@ int main(int argc, char** argv) {
   afficher(grille);
 
   //Calculs des erreurs en lignes et colonnes
-  int idRegion = 8;
-  int nbErreursRegionId = nbErreursRegion(grille, idRegion);
-  int *nbErreursLigne = nbErreursLignes(grille);
-  int *nbErreursColonne = nbErreursColonnes(grille);
-  int maximumErreurs = maxErreurs(nbErreursLigne, nbErreursColonne); //Renvoie la région à random
+  int *nbErreursLigne;
+  int *nbErreursColonne;
+  int maximumErreurs; //Renvoie la région à random
 
-  // while(maximumErreurs != 0)
-  // {
-  //   remplirRandomRegion(grille, maximumErreurs);
-  //   *nbErreursLigne = nbErreursLignes(grille);
-  //   *nbErreursColonne = nbErreursColonnes(grille);
-  //   maximumErreurs = maxErreurs(nbErreursLigne, nbErreursColonne);
-  // }
+  do {
+    nbErreursLigne = nbErreursLignes(grille);
+    nbErreursColonne = nbErreursColonnes(grille);
+    maximumErreurs = maxErreurs(nbErreursLigne, nbErreursColonne);
+    remplirRandomRegion(grille, maximumErreurs);
+
+    printf("Région : %d.\n", maximumErreurs);
+  } while (maximumErreurs != -1);
 
   //Affichage du nombre d'erreurs
   //printf("%d erreurs dans la région %d.\n", nbErreursRegionId, idRegion);
