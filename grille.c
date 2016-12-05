@@ -10,7 +10,7 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
 
   while (fscanf(fichier, "%1d", &d) == 1 && n < 81) {
     grille->tableau[n].valeur = d;
-    grille->tableau[n].deBase = d == 0;
+    grille->tableau[n].deBase = d != 0;
 
     n++;
   }
