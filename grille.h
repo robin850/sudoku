@@ -13,7 +13,6 @@ typedef struct {
 typedef struct {
   Case regions[9][9];
   Case lignes[9][9];
-  Case colonnes[9][9];
   Case tableau[81];
 } Grille;
 
@@ -22,5 +21,15 @@ void charger(char *nom_fichier, Grille *grille, int ligne);
 bool estValide(Grille *grille);
 
 void afficher(Grille *grille);
+
+bool estDans(Case *tab, int i);
+
+void placer(Grille *grille, int i, int j, int position, int valeur);
+
+bool absentLigne(Grille *grille, int valeur, int ligne);
+
+bool absentColonne(Grille *grille, int valeur, int colonne);
+
+bool absentRegion(Grille *grille, int valeur, int ligne, int colonne);
 
 #endif

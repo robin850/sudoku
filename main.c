@@ -1,21 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
 #include <time.h>
 
 #include "grille.h"
+#include "solveur.h"
+#include "options.h"
+#include "io.h"
 
 int nombreLignes(char *nom_fichier) {
   FILE *fichier = fopen(nom_fichier, "r");
 
-	char c;
+	int d;
 	int nbLignes = 0;
 
-	while ((c = fgetc(fichier)) != EOF) {
-		if (c == '\n')
-			nbLignes++;
-	}
+	while (fscanf(fichier, "%81d", &d) == 1)
+		nbLignes++;
 
   fclose(fichier);
 
@@ -62,10 +62,13 @@ int nbErreursRegion(Grille *grille, int idRegion)
   for (i = 0; i < 9; i++)
     region[i] = grille->regions[idRegion][i].valeur;
 
+  for (i = 0; i < 9; i++)
+    printf("%d ", grille->regions[idRegion][i].valeur);
+
   //Met les valeurs à 0 quand il la trouve dans la région
   for(i = 0; i < 9; i++)
     for(j = 0; j < 9; j++)
-     if(region[i] == valeurs[j])
+     if(grille->regions[idRegion][i].valeur == valeurs[j])
         valeurs[j] = 0;
 
   //Compte les erreurs
@@ -203,16 +206,6 @@ void remplirRandomRegion(Grille *grille, int idRegion)
 
 }
 
-bool estDans(int *tab, int i) {
-  int j;
-
-  for (j = 0; j < 9; j++)
-    if (tab[j] == i)
-      return true;
-
-  return false;
-}
-
 void verifierFicher() {
   // Checker si c'est la bonne taille
   // Si elle est valide de base
@@ -221,60 +214,13 @@ void verifierFicher() {
   //     sur la même ligne ou la même colonne.
 }
 
-/**
- * Affiche une erreur passé en paramètre et sort du programme
- * avec un code d'erreur 1.
- */
-void erreur(const char* message) {
-  printf("Erreur : %s", message);
-  exit(1);
-}
-
-void afficherOptions(char *name) {
-  printf("Utilisation: %s [fichier] [options]", name);
-
-  printf("\n\n");
-
-  printf("--help:      Affiche cette aide.\n");
-  printf("--verbose:   Solve en détaillant les operations.\n");
-  printf("--timeAlert: Temps en millisecondes pour arrêter la resolution\n");
-  printf("             de la grille si le temps donne est depasse.\n");
-
-  exit(0);
-}
-
-/**
- * Fonction qui vérifie si une option a été passée en paramètre
- * en ligne de commande.
- */
-bool option(int argc, char** argv, char* option) {
-  for (int i = 0; i < argc; i++)
-    if (strcmp(argv[i], option) == 0)
-      return true;
-
-  return false;
-}
-
-/**
- * Fonction qui récupère la valeur passé en paramètre
- * de l'otpion 'timeAlert'.
- */
-void timeAlert(int argc, char** argv, float *valeur) {
-  int i;
-
-  for (i = 0; i < argc; i++)
-    if (strcmp(argv[i], "--timeAlert") == 0)
-      break;
-
-  *valeur = strtof(argv[i+1], NULL);
-}
-
 int main(int argc, char** argv) {
   Grille *grille = (Grille *)malloc(sizeof(Grille));
 
   int i = 0;
   bool  verbose;
   float time_alert;
+  double debut, fin, total = 0.0;
 
   if (argc == 1 || option(argc, argv, "--help"))
     afficherOptions(argv[0]);
@@ -289,30 +235,44 @@ int main(int argc, char** argv) {
   if (option(argc, argv, "--timeAlert"))
     timeAlert(argc, argv, &time_alert);
 
+  // +------------------------------------------------+
+  // | Boucle résolvant toutes les grilles du fichier |
+  // +------------------------------------------------+
+  for (i = 0; i < nbLignes; i++) {
+    charger(nom_fichier, grille, i);
+    printf("Grille %d\n", i+1);
 
-  //Chargement de la grille 0
-  charger(nom_fichier, grille, i);
-  printf("Grille %d\n", i);
-  afficher(grille);
-  printf("\n\n");
+    debut = temps();
+    total += debut;
+
+    backtracking(grille, 0);
+
+    fin = temps();
+
+    afficher(grille);
+    ecrire(grille);
+
+    printf("\nLa grille n°%d a ete resolue en %lf secondes.\n\n", i+1, (fin - debut));
+  }
+
 
   //Remplissage aléatoire
-  remplirRandom(grille);
-  afficher(grille);
+  // remplirRandom(grille);
+  // afficher(grille);
 
   //Calculs des erreurs en lignes et colonnes
-  int *nbErreursLigne;
-  int *nbErreursColonne;
-  int maximumErreurs; //Renvoie la région à random
+  // int *nbErreursLigne;
+  // int *nbErreursColonne;
+  // int maximumErreurs; //Renvoie la région à random
 
-  do {
-    nbErreursLigne = nbErreursLignes(grille);
-    nbErreursColonne = nbErreursColonnes(grille);
-    maximumErreurs = maxErreurs(nbErreursLigne, nbErreursColonne);
-    remplirRandomRegion(grille, maximumErreurs);
+  // do {
+  //   nbErreursLigne = nbErreursLignes(grille);
+  //   nbErreursColonne = nbErreursColonnes(grille);
+  //   maximumErreurs = maxErreurs(nbErreursLigne, nbErreursColonne);
+  //   remplirRandomRegion(grille, maximumErreurs);
 
-    printf("Région : %d.\n", maximumErreurs);
-  } while (maximumErreurs != -1);
+  //   printf("Région : %d.\n", maximumErreurs);
+  // } while (maximumErreurs != -1);
 
   //Affichage du nombre d'erreurs
   //printf("%d erreurs dans la région %d.\n", nbErreursRegionId, idRegion);
@@ -320,8 +280,8 @@ int main(int argc, char** argv) {
   //   printf("Il y a %d erreurs dans la ligne %d\n", nbErreursLigne[i], i+1);
   // for (i = 0; i < 9; i++)
    // printf("Il y a %d erreurs dans la colonne %d\n", nbErreursLigne[i], i+1);
-  printf("Région : %d\n", maximumErreurs);
-  remplirRandomRegion(grille, maximumErreurs);
-  afficher(grille);
+  // printf("Région : %d\n", maximumErreurs);
+  // remplirRandomRegion(grille, maximumErreurs);
+  // afficher(grille);
   return 0;
 }

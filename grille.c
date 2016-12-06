@@ -6,7 +6,9 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
   int d, i, j, k, debut, debut_ligne, n = 0;
   int compteur = 0;
 
-  fseek(fichier, ligne*81, SEEK_CUR);
+  // On rajoute le numéro de la ligne car \n compte
+  // pour un caractère.
+  fseek(fichier, (ligne*81)+ligne, SEEK_CUR);
 
   while (fscanf(fichier, "%1d", &d) == 1 && n < 81) {
     grille->tableau[n].valeur = d;
@@ -24,13 +26,6 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
       compteur++;
     }
   }
-
-  // +---------------------------------------+
-  // | Représentation en tableau de colonnes |
-  // +---------------------------------------+
-  for (i = 0; i < 9; i++)
-    for (j = 0; j < 9; j++)
-      grille->colonnes[i][j] = grille->lignes[j][i];
 
   // +--------------------------------------+
   // | Représentation en tableau de régions |
@@ -50,92 +45,59 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
   fclose(fichier);
 }
 
-void zero(int *tableau) {
-  int i;
+bool estDans(Case *tab, int i) {
+  int j;
 
-  for (i = 0; i < 9; i++)
-    tableau[i] = 0;
+  for (j = 0; j < 9; j++)
+    if (tab[j].valeur == i)
+      return true;
+
+  return false;
 }
 
-bool estValide(Grille *grille) {
-  int i, j, valeur;
-  int *check = (int *)malloc(10 * sizeof(int *));
+void placer(Grille *grille, int i, int j, int position, int valeur) {
+  grille->tableau[position].valeur = valeur;
+  grille->lignes[i][j].valeur      = valeur;
+}
 
-  // +------------------------+
-  // | Vérification en lignes |
-  // +------------------------+
-  for (i = 0; i < 9; i++) {
-    zero(check);
+bool absentLigne(Grille *grille, int valeur, int ligne) {
+  int colonne;
 
-    for (j = 0; j < 9; j++)
-      valeur = grille->lignes[i][j].valeur;
-
-      if (valeur == 0)
-        continue;
-
-      if (check[valeur])
-        return false;
-      else
-        check[valeur]++;
-  }
-
-  // +--------------------------+
-  // | Vérification en colonnes |
-  // +--------------------------+
-  for (i = 0; i < 9; i++) {
-    zero(check);
-
-    for (j = 0; j < 9; j++)
-      valeur = grille->colonnes[i][j].valeur;
-
-      if (valeur == 0)
-        continue;
-
-      if (check[valeur])
-        return false;
-      else
-        check[valeur]++;
-  }
-
-  // +-------------------------+
-  // | Vérification en régions |
-  // +-------------------------+
-  for (i = 0; i < 9; i++) {
-    zero(check);
-
-    for (j = 0; j < 9; j++)
-      valeur = grille->regions[i][j].valeur;
-
-      if (valeur == 0)
-        continue;
-
-      if (check[valeur])
-        return false;
-      else
-        check[valeur]++;
-  }
+  for (colonne = 0; colonne < 9; colonne++)
+    if (grille->lignes[ligne][colonne].valeur == valeur)
+      return false;
 
   return true;
 }
 
-void afficher(Grille *grille) {
-  int i, j;
+bool absentColonne(Grille *grille, int valeur, int colonne) {
+  int ligne;
 
-  for (i = 0; i < 9; i++) {
-    if (i % 3 == 0)
-      printf("\n+---------+---------+---------+\n");
-    else
-      printf("\n");
+  for (ligne = 0; ligne < 9; ligne++)
+    if (grille->lignes[ligne][colonne].valeur == valeur)
+      return false;
 
-    for (j = 0; j < 9; j++) {
-      if (j % 3 == 0)
-        printf("|");
+  return true;
+}
 
-      printf(" %d ", grille->lignes[i][j].valeur);
-    }
+bool absentRegion(Grille *grille, int valeur, int ligne, int colonne) {
+  // int i, region;
 
-    printf("|");
-  }
+  // if (colonne < 3)
+  //   region = ligne < 3 ? 0 : (ligne < 6 ? 3 : 6);
+  // else if (colonne < 6)
+  //   region = ligne < 3 ? 1 : (ligne < 6 ? 4 : 7);
+  // else
+  //   region = ligne < 3 ? 2 : (ligne < 6 ? 5 : 8);
 
-  printf("\n+---------+---------+---------+\n");
+  // for (i = 0; i < 9; i++)
+  //   if (grille->regions[region][i].valeur == valeur)
+  //     return false;
+
+  int _i = ligne-(ligne%3), _j = colonne-(colonne%3);
+    for (ligne = _i; ligne < _i+3; ligne++)
+        for (colonne=_j; colonne < _j+3; colonne++)
+            if (grille->lignes[ligne][colonne].valeur == valeur)
+                return false;
+    return true;
 }
