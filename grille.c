@@ -5,6 +5,14 @@
 
 #include "grille.h"
 
+/**
+ * Charge une grille de Sudoku pour un fichier et une ligne donnés.
+ *
+ * @param  nom_fichier - Chemin vers le fichier.
+ * @param  grille      - Pointeur sur la grille.
+ * @param  ligne       - Ligne où la grille est écrite.
+ * @return void
+ */
 void charger(char *nom_fichier, Grille *grille, int ligne) {
   FILE *fichier = fopen(nom_fichier, "r");
 
@@ -50,6 +58,13 @@ void charger(char *nom_fichier, Grille *grille, int ligne) {
   fclose(fichier);
 }
 
+/**
+ * Vérifie si une valeur est présente dans un tableau.
+ *
+ * @param  tab - Tableau.
+ * @param  i   - Valeur à chercher.
+ * @return bool
+ */
 bool estDans(Case *tab, int i) {
   int j;
 
@@ -60,11 +75,14 @@ bool estDans(Case *tab, int i) {
   return false;
 }
 
-void placer(Grille *grille, int i, int j, int position, int valeur) {
-  grille->tableau[position].valeur = valeur;
-  grille->lignes[i][j].valeur      = valeur;
-}
-
+/**
+ * Vérifie si une valeur est absente d'une ligne.
+ *
+ * @param  grille - Pointeur sur la grille.
+ * @param  valeur - Valeur à chercher.
+ * @param  ligne  - Ligne sur laquelle chercher.
+ * @return bool
+ */
 bool absentLigne(Grille *grille, int valeur, int ligne) {
   int colonne;
 
@@ -75,6 +93,14 @@ bool absentLigne(Grille *grille, int valeur, int ligne) {
   return true;
 }
 
+/**
+ * Vérifie si une valeur est absente d'une colonne.
+ *
+ * @param  grille  - Pointeur sur la grille.
+ * @param  valeur  - Valeur à chercher.
+ * @param  colonne - Colonne sur laquelle chercher.
+ * @return bool
+ */
 bool absentColonne(Grille *grille, int valeur, int colonne) {
   int ligne;
 
@@ -85,24 +111,43 @@ bool absentColonne(Grille *grille, int valeur, int colonne) {
   return true;
 }
 
+/**
+ * Vérifie si une valeur est absente d'une région. La région
+ * est déterminée à partir de la ligne et de la colone à
+ * laquelle le processus de résolution se trouve.
+ *
+ * @param  grille  - Pointeur sur la grille.
+ * @param  valeur  - Valeur à chercher.
+ * @param  ligne   - Ligne actuelle.
+ * @param  colonne - Colonne actuelle.
+ * @return bool
+ */
 bool absentRegion(Grille *grille, int valeur, int ligne, int colonne) {
-  // int i, region;
+  int i, j;
 
+  // Précedent code utilisant la représentation en tableaux
+  // de régions (trop lente, c.f. compte rendu).
+  //
+  // int i, region;
+  //
   // if (colonne < 3)
   //   region = ligne < 3 ? 0 : (ligne < 6 ? 3 : 6);
   // else if (colonne < 6)
   //   region = ligne < 3 ? 1 : (ligne < 6 ? 4 : 7);
   // else
   //   region = ligne < 3 ? 2 : (ligne < 6 ? 5 : 8);
-
+  //
   // for (i = 0; i < 9; i++)
   //   if (grille->regions[region][i].valeur == valeur)
   //     return false;
 
-  int _i = ligne-(ligne%3), _j = colonne-(colonne%3);
-    for (ligne = _i; ligne < _i+3; ligne++)
-        for (colonne=_j; colonne < _j+3; colonne++)
-            if (grille->lignes[ligne][colonne].valeur == valeur)
-                return false;
-    return true;
+  int debut_l = ligne - (ligne % 3);
+  int debut_c = colonne - (colonne % 3);
+
+  for (i = debut_l; i < debut_l + 3; i++)
+    for (j = debut_c; j < debut_c + 3; j++)
+      if (grille->lignes[i][j].valeur == valeur)
+        return false;
+
+  return true;
 }

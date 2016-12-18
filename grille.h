@@ -29,8 +29,6 @@ void afficher(Grille *grille);
 
 bool estDans(Case *tab, int i);
 
-void placer(Grille *grille, int i, int j, int position, int valeur);
-
 bool absentLigne(Grille *grille, int valeur, int ligne);
 
 bool absentColonne(Grille *grille, int valeur, int colonne);

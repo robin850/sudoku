@@ -61,11 +61,11 @@ bool backtracking(Grille *grille, int position) {
  */
 
 /**
+ * Remplit les valeurs manquantes (i.e. les zéros) par des
+ * valeurs aléatoires.
  *
- *
- *
- *
- *
+ * @param  grille - Pointeur sur le grille.
+ * @return void
  */
 void remplirRandom(Grille *grille) {
   // On crée un "seed" pour générer des randoms
@@ -96,6 +96,14 @@ void remplirRandom(Grille *grille) {
   }
 }
 
+/**
+ * Calcule le nombre d'erreurs en régions et renvoie
+ * un tableau contenant le nombre d'erreurs pour
+ * chacune des régions de la grille.
+ *
+ * @param  grille - Pointeur sur la grille.
+ * @return int*
+ */
 int *nbErreursRegions(Grille *grille) {
   int i, j, idRegion = 0;
   int *nbErreur = (int *)malloc(9 * sizeof(int));
@@ -126,11 +134,11 @@ int *nbErreursRegions(Grille *grille) {
 }
 
 /**
+ * Calcul le nombre total d'erreurs de la grille
+ * en se basant sur le tableau d'erreurs en régions.
  *
- *
- *
- *
- *
+ * @param  nbErreursRegions - Tableau d'erreurs en région
+ * @return int
  */
 int sommeErreursRegions(int *nbErreursRegions) {
   int i, somme = 0;
@@ -142,11 +150,12 @@ int sommeErreursRegions(int *nbErreursRegions) {
 }
 
 /**
+ * Calcule le nombre d'erreurs en lignes et renvoie
+ * un tableau contenant le nombre d'erreurs pour
+ * chacune des lignes de la grille.
  *
- *
- *
- *
- *
+ * @param  grille - Pointeur sur la grille.
+ * @return int*
  */
 int *nbErreursLignes(Grille *grille) {
   int i, j, k;
@@ -172,6 +181,14 @@ int *nbErreursLignes(Grille *grille) {
   return nbErreursLigne;
 }
 
+/**
+ * Calcule le nombre d'erreurs en colonnes et renvoie
+ * un tableau contenant le nombre d'erreurs pour
+ * chacune des colonnes de la grille.
+ *
+ * @param  grille - Pointeur sur la grille.
+ * @return int*
+ */
 int *nbErreursColonnes(Grille *grille) {
   int i,j, k;
   int *nbErreursColonne = (int *)malloc(9 * sizeof(int));
@@ -196,10 +213,18 @@ int *nbErreursColonnes(Grille *grille) {
   return nbErreursColonne;
 }
 
-// Retourne l'ID de la région avec le plus d'erreurs pour la random
+/**
+ * Retourne l'ID de la région avec le plus grande nombre
+ * d'erreurs pour la random.
+ *
+ * @param  nbErreursLigne   - Tableau d'erreurs en lignes.
+ * @param  nbErreursColonne - Tableau d'erreurs en colonnes.
+ * @return int
+ */
 int maxErreurs(int *nbErreursLigne, int *nbErreursColonne) {
   int i;
-  int *max = (int*)malloc(9*sizeof(int));
+  int *max = (int *)malloc(9 * sizeof(int));
+
   max[0] = nbErreursLigne[0] + nbErreursLigne[1] + nbErreursLigne[2] + nbErreursColonne[0] + nbErreursColonne[1] + nbErreursColonne[2];
   max[1] = nbErreursLigne[0] + nbErreursLigne[1] + nbErreursLigne[2] + nbErreursColonne[3] + nbErreursColonne[4] + nbErreursColonne[5];
   max[2] = nbErreursLigne[0] + nbErreursLigne[1] + nbErreursLigne[2] + nbErreursColonne[6] + nbErreursColonne[7] + nbErreursColonne[8];
@@ -228,6 +253,13 @@ int maxErreurs(int *nbErreursLigne, int *nbErreursColonne) {
   return idRegion;
 }
 
+/**
+ * Remplit avec des valeurs aléatoires une seule région.
+ *
+ * @param  grille   - Pointeur sur la grille.
+ * @param  idRegion - Numéro de la région.
+ * @return void
+ */
 void remplirRandomRegion(Grille *grille, int idRegion) {
   int i, j, id, ligne, colonne, valeurs[9] = {1,2,3,4,5,6,7,8,9};
   Case *region = (Case *)malloc(9 * sizeof(Case));
@@ -281,5 +313,4 @@ void remplirRandomRegion(Grille *grille, int idRegion) {
   for (i = ligne; i < ligne + 3; i++)
     for (j = colonne; j < colonne + 3; j++, compteur++)
       grille->lignes[i][j].valeur = region[compteur].valeur;
-
 }
