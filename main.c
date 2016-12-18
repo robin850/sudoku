@@ -28,7 +28,6 @@ int main(int argc, char** argv) {
   char *nom_fichier = argv[1];
   int nbLignes = nombreLignes(nom_fichier);
 
-  printf("Nombres de grilles dans le fichier : %d\n", nbLignes);
 
   print_opt      = option(argc, argv, "--print");
   verbose_opt    = option(argc, argv, "--verbose");
@@ -36,6 +35,9 @@ int main(int argc, char** argv) {
 
   if (time_alert_opt)
     timeAlert(argc, argv, &time_alert);
+
+  if (print_opt)
+    printf("Nombres de grilles dans le fichier : %d\n", nbLignes);
 
   // +----------------------------------------------+
   // | Boucle lisant chacune des grilles du fichier |
