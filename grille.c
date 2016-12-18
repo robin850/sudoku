@@ -1,3 +1,8 @@
+/**
+ * @author Samuel Bazniar
+ * @author Robin Dupret
+ */
+
 #include "grille.h"
 
 void charger(char *nom_fichier, Grille *grille, int ligne) {

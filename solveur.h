@@ -1,3 +1,8 @@
+/**
+ * @author Samuel Bazniar
+ * @author Robin Dupret
+ */
+
 #ifndef SOLVEUR_H
 #define SOLVEUR_H
 

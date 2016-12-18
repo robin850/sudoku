@@ -1,3 +1,8 @@
+/**
+ * @author Samuel Bazniar
+ * @author Robin Dupret
+ */
+
 #include "solveur.h"
 
 /**

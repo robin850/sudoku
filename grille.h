@@ -1,3 +1,8 @@
+/**
+ * @author Samuel Bazniar
+ * @author Robin Dupret
+ */
+
 #ifndef GRILLE_H
 #define GRILLE_H
 
