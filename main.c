@@ -54,15 +54,15 @@ int main(int argc, char** argv) {
 
 
     // -> Tentative en Stochastique
-    do {
-      nbErreursLigne   = nbErreursLignes(grille);
-      nbErreursColonne = nbErreursColonnes(grille);
-      maximumErreurs   = maxErreurs(nbErreursLigne, nbErreursColonne);
+    // do {
+    //   nbErreursLigne   = nbErreursLignes(grille);
+    //   nbErreursColonne = nbErreursColonnes(grille);
+    //   maximumErreurs   = maxErreurs(nbErreursLigne, nbErreursColonne);
 
-      for (i = 0; i < 9; i++)
-        remplirRandomRegion(grille, i);
+    //   for (i = 0; i < 9; i++)
+    //     remplirRandomRegion(grille, i);
 
-    } while (maximumErreurs != -1);
+    // } while (maximumErreurs != -1);
 
     fin = temps();
 
