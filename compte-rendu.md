@@ -21,7 +21,9 @@ Les différents algorithmes implémentés sont:
 
 Pour collaborer facilement sur les mêmes portions de code, nous avons mis en place un dépôt Git sur la forge GitHub. Cela nous permet de partager le code facilement et d'éviter de supprimer le travail de l'autre lorsque l'on travaille en même temps sur le même fichier.
 
-### Structuration des données
+Le dépôt est disponible ici : https://github.com/robin850/sudoku.
+
+### Structuration de la grille
 
 Nous sommes partit du principe que plutôt que d'essayer de répartir correctement l'utilisation des ressources entre la RAM et le processeur, puisque nous cherchons simplement à être le plus rapide possible, nous stockons plusieurs fois une même grille mais sous différentes représentations (une en tableau de lignes, une en tableau de régions et une en tableau de colonnes).
 
@@ -92,7 +94,28 @@ Le *benchmark* a été implémenté en C et exécuté 20 fois et les résultats 
 | Tableau 9\*3\*3 | 1 531 541 i/s | ± 3.789% |
 | Représentations multiples | 1 593 707 i/s | ± 2.87% |
 
-La représentation en multiples tableau de la grille permet de réaliser près de 61 705 itération de plus par seconde en moyenne.
+La représentation en multiples tableau de la grille permet de réaliser près de 61 705 itérations de plus par seconde en moyenne.
+
+### Réalité
+
+En réalité, cette structuration en différentes représentations ne nous permet pas d'avoir de réelles meilleures performances. Le *benchmark* ne teste pas ce qu'il se passe en réalité car on n'incrémente bêtement l'indice de la région, il n'y a pas besoin de la déterminer alors que lorsque l'on résoud une grille, il faut soit déterminer la région à partir de la position soit la passer en paramètre à la fonction de résolution mais il faut alors vérifier s'il y a besoin de l'incrémenter ou non à chaque nouvel appel récursif.
+
+Nous avions implémenté la détermination du numéro de région de cette façon :
+
+~~~c
+int region;
+
+if (colonne < 3)
+  region = ligne < 3 ? 0 : (ligne < 6 ? 3 : 6);
+else if (colonne < 6)
+  region = ligne < 3 ? 1 : (ligne < 6 ? 4 : 7);
+else
+  region = ligne < 3 ? 2 : (ligne < 6 ? 5 : 8);
+~~
+
+Nous n'avons pas réalisé de réel *benchmark* de cette implémentation car la différence du temps de résolution avec une implémentation “classique” était visible d'un point de vue humain. Les performances étaient drastiquement moins bonnes ; une grille mettait parfois plus de deux secondes à être resolue.
+
+Au final, nous avons décidé de conserver tout de même la représentation sous forme de régions car elle était pratique pour l'implémentation de la résolution Stochastique.
 
 ## Bibliographie es différents algorithmes
 
