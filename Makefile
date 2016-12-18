@@ -1,5 +1,3 @@
-.PHONY: test
-
 all: main
 
 solveur: solveur.h solveur.c
@@ -16,7 +14,3 @@ grille: grille.h grille.c
 
 main: main.c grille solveur options io
 	gcc -o main grille.o solveur.o options.o io.o main.c -Wall -Wextra
-
-test: test/test.h test/test_grille.c grille
-	gcc -o tests test/test_grille.c
-	./tests
