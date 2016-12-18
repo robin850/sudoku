@@ -191,7 +191,7 @@ void remplirRandomRegion(Grille *grille, int idRegion)
   //Supprime les valeurs de base dans le tableau valeurs
   for (i = 0; i < 9; i++)
   {
-    if (region[i].deBase == true) 
+    if (region[i].deBase == true)
     {
       for(j = 0; j < 9; j++)
         if(valeurs[j] == region[i].valeur)
@@ -201,7 +201,7 @@ void remplirRandomRegion(Grille *grille, int idRegion)
 
   for (i = 0; i < 9; i++)
   {
-    if (region[i].deBase == false) 
+    if (region[i].deBase == false)
     {
       id = rand()%9;
       while(valeurs[id] == 0)
@@ -210,7 +210,7 @@ void remplirRandomRegion(Grille *grille, int idRegion)
       valeurs[id] = 0;
     }
   }
-  
+
   //Rempli grille->lignes
   if (idRegion == 0 || idRegion == 3 || idRegion == 6)
     colonne = 0;
@@ -234,19 +234,13 @@ void remplirRandomRegion(Grille *grille, int idRegion)
 
 }
 
-void verifierFicher() {
-  // Checker si c'est la bonne taille
-  // Si elle est valide de base
-  //   - Si c'est les bons caractères
-  //   - Si les caractères sont bien placés (pas deux fois le même
-  //     sur la même ligne ou la même colonne.
-}
-
 int main(int argc, char** argv) {
   Grille *grille = (Grille *)malloc(sizeof(Grille));
 
   int i = 0;
-  bool  verbose;
+  int *nbErreursLigne, *nbErreursColonne, maximumErreurs;
+
+  bool  verbose_opt, print_opt, time_alert_opt;
   float time_alert;
   double debut, fin, total = 0.0;
 
@@ -258,53 +252,50 @@ int main(int argc, char** argv) {
 
   printf("Nombres de grilles dans le fichier : %d\n", nbLignes);
 
-  verbose = option(argc, argv, "--verbose");
+  print_opt      = option(argc, argv, "--print");
+  verbose_opt    = option(argc, argv, "--verbose");
+  time_alert_opt = option(argc, argv, "--timeAlert");
 
-  if (option(argc, argv, "--timeAlert"))
+  if (time_alert_opt)
     timeAlert(argc, argv, &time_alert);
 
-  // +---------------------------------------------------------------------+
-  // | Boucle résolvant toutes les grilles du fichier avec le backtracking |
-  // +---------------------------------------------------------------------+
-  // for (i = 0; i < nbLignes; i++) {
-  //   charger(nom_fichier, grille, i);
-  //   printf("Grille %d\n", i+1);
+  // +----------------------------------------------+
+  // | Boucle lisant chacune des grilles du fichier |
+  // +----------------------------------------------+
+  for (i = 0; i < nbLignes; i++) {
+    charger(nom_fichier, grille, i);
 
-  //   debut = temps();
-  //   total += debut;
+    if (print_opt)
+      printf("Grille %d\n", i+1);
 
-  //   backtracking(grille, 0);
+    debut = temps();
+    total += debut;
 
-  //   fin = temps();
+    // -> Résolution par back-tracking
+    backtracking(grille, 0);
 
-  //   afficher(grille);
-  //   ecrire(grille);
 
-  //   printf("\nLa grille n°%d a ete resolue en %lf secondes.\n\n", i+1, (fin - debut));
-  // }
+    // -> Tentative en Stochastique
+    // do {
+    //   nbErreursLigne   = nbErreursLignes(grille);
+    //   nbErreursColonne = nbErreursColonnes(grille);
+    //   maximumErreurs   = maxErreurs(nbErreursLigne, nbErreursColonne);
 
-  charger(nom_fichier, grille, i);
-  printf("Grille %d\n", i+1);  
-  afficher(grille);
+    //   for (i = 0; i < 9; i++)
+    //     remplirRandomRegion(grille, i);
 
-  int *nbErreursLigne, *nbErreursColonne, maximumErreurs;
-  
-  do{
-    nbErreursLigne = nbErreursLignes(grille);
-    nbErreursColonne = nbErreursColonnes(grille);
-    maximumErreurs = maxErreurs(nbErreursLigne, nbErreursColonne);
-    for(i = 0; i < 9; i++)
-      remplirRandomRegion(grille, i);
-    for(i = 0; i < 9; i++)
-      printf("%d ", nbErreursLigne[i]);
-    printf("\n");
-    for(i = 0; i < 9; i++)
-      printf("%d ", nbErreursColonne[i]);
-    printf("\n");
-    afficher(grille);
-  }while(maximumErreurs != -1);
+    // } while (maximumErreurs != -1);
 
-  afficher(grille);
+    fin = temps();
+
+    if (print_opt)
+      afficher(grille);
+
+    ecrire(grille);
+
+    if (print_opt)
+      printf("\nLa grille n°%d a ete resolue en %lf secondes.\n\n", i+1, (fin - debut));
+  }
 
   return 0;
 }
