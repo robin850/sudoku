@@ -17,4 +17,6 @@ void affichage(Grille *grille);
 
 void ecrire(Grille *grille);
 
+int nombreLignes(char *nom_fichier);
+
 #endif

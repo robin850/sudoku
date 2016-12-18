@@ -13,20 +13,6 @@
 #include "options.h"
 #include "io.h"
 
-int nombreLignes(char *nom_fichier) {
-  FILE *fichier = fopen(nom_fichier, "r");
-
-	int d;
-	int nbLignes = 0;
-
-	while (fscanf(fichier, "%81d", &d) == 1)
-		nbLignes++;
-
-  fclose(fichier);
-
-	return nbLignes;
-}
-
 void remplirRandom(Grille *grille) {
   srand(time(NULL));
   int i, j, compteur = 0, debut, debut_ligne, k;

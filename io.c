@@ -66,3 +66,29 @@ void ecrire(Grille *grille) {
 
   fclose(fichier);
 }
+
+/**
+ * Calcule le nombre de lignes contenues dans un fichier
+ * texte en utilisant `fscanf` pour ne pas simplement
+ * calculer le nombre de lignes du fichier mais le nombre
+ * de lignes valides.
+ *
+ * Ainsi, le fichier contenant les grilles peut se terminer
+ * par plusieurs lignes vides.
+ *
+ * @param  nom_fichier - Nom du fichier de grilles
+ * @return int
+ */
+int nombreLignes(char *nom_fichier) {
+  FILE *fichier = fopen(nom_fichier, "r");
+
+  int d;
+  int nbLignes = 0;
+
+  while (fscanf(fichier, "%81d", &d) == 1)
+    nbLignes++;
+
+  fclose(fichier);
+
+  return nbLignes;
+}
