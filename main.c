@@ -24,13 +24,10 @@ int nombreLignes(char *nom_fichier) {
 
 void remplirRandom(Grille *grille) {
   srand(time(NULL));
-  int i, j, v, compteur = 0, debut, debut_ligne, k;
+  int i, j, compteur = 0, debut, debut_ligne, k;
   for (i = 0; i < 81; i++)
     if (grille->tableau[i].deBase == false) {
-      do {
-        v = (rand() %10);
-      } while (v == 0);
-      grille->tableau[i].valeur = v;
+      grille->tableau[i].valeur = rand()%9+1;
     }
 
   for(i = 0; i < 9; i++)
@@ -53,30 +50,43 @@ void remplirRandom(Grille *grille) {
   }
 }
 
-int nbErreursRegion(Grille *grille, int idRegion)
+int *nbErreursRegions(Grille *grille)
 {
-  int i, j, nbErreur = 0, valeurs[9] = {1,2,3,4,5,6,7,8,9};
-
+  int i, j, idRegion = 0;
+  int *nbErreur = (int*)malloc(9*sizeof(int));
   //Création de la région demandée
   int *region = (int*)malloc(9*sizeof(int));
-  for (i = 0; i < 9; i++)
-    region[i] = grille->regions[idRegion][i].valeur;
 
   for (i = 0; i < 9; i++)
-    printf("%d ", grille->regions[idRegion][i].valeur);
+      nbErreur[i] = 0;
 
-  //Met les valeurs à 0 quand il la trouve dans la région
-  for(i = 0; i < 9; i++)
-    for(j = 0; j < 9; j++)
-     if(grille->regions[idRegion][i].valeur == valeurs[j])
-        valeurs[j] = 0;
+  for(idRegion = 0; idRegion < 9; idRegion++)
+  {
+    int valeurs[9] = {1,2,3,4,5,6,7,8,9};
+    for (i = 0; i < 9; i++)
+      region[i] = grille->regions[idRegion][i].valeur;
 
-  //Compte les erreurs
-  for(i = 0; i < 9; i++)
-    if(valeurs[i] != 0)
-      nbErreur++;
+    //Met les valeurs à 0 quand il la trouve dans la région
+    for(i = 0; i < 9; i++)
+      for(j = 0; j < 9; j++)
+       if(region[i] == valeurs[j])
+          valeurs[j] = 0;
+
+    //Compte les erreurs
+    for(i = 0; i < 9; i++)
+      if(valeurs[i] != 0)
+        nbErreur[idRegion]++;
+  }
 
   return nbErreur;
+}
+
+int sommeErreursRegions(int *nbErreursRegions)
+{
+  int i, somme = 0;
+  for (i = 0; i < 9; i++)
+    somme += nbErreursRegions[i];
+  return somme;
 }
 
 int *nbErreursLignes(Grille *grille)
@@ -163,7 +173,7 @@ int maxErreurs(int *nbErreursLigne, int *nbErreursColonne)
 
 void remplirRandomRegion(Grille *grille, int idRegion)
 {
-  int i, j, ligne, colonne;
+  int i, j, id, ligne, colonne, valeurs[9] = {1,2,3,4,5,6,7,8,9};
   Case *region = (Case*)malloc(9*sizeof(Case));
   for (i = 0; i < 9; i++)
   {
@@ -172,17 +182,30 @@ void remplirRandomRegion(Grille *grille, int idRegion)
   }
 
   srand(time(NULL));
-  int v;
+
+  //Supprime les valeurs de base dans le tableau valeurs
+  for (i = 0; i < 9; i++)
+  {
+    if (region[i].deBase == true) 
+    {
+      for(j = 0; j < 9; j++)
+        if(valeurs[j] == region[i].valeur)
+          valeurs[j] = 0;
+    }
+  }
 
   for (i = 0; i < 9; i++)
-    if (region[i].deBase == false) {
-      do {
-        v = rand() % 10;
-      } while (v == 0);
-
-      region[i].valeur = v;
+  {
+    if (region[i].deBase == false) 
+    {
+      id = rand()%9;
+      while(valeurs[id] == 0)
+        id = rand()%9;
+      region[i].valeur = valeurs[id];
+      valeurs[id] = 0;
     }
-
+  }
+  
   //Rempli grille->lignes
   if (idRegion == 0 || idRegion == 3 || idRegion == 6)
     colonne = 0;
@@ -235,53 +258,48 @@ int main(int argc, char** argv) {
   if (option(argc, argv, "--timeAlert"))
     timeAlert(argc, argv, &time_alert);
 
-  // +------------------------------------------------+
-  // | Boucle résolvant toutes les grilles du fichier |
-  // +------------------------------------------------+
-  for (i = 0; i < nbLignes; i++) {
-    charger(nom_fichier, grille, i);
-    printf("Grille %d\n", i+1);
+  // +---------------------------------------------------------------------+
+  // | Boucle résolvant toutes les grilles du fichier avec le backtracking |
+  // +---------------------------------------------------------------------+
+  // for (i = 0; i < nbLignes; i++) {
+  //   charger(nom_fichier, grille, i);
+  //   printf("Grille %d\n", i+1);
 
-    debut = temps();
-    total += debut;
+  //   debut = temps();
+  //   total += debut;
 
-    backtracking(grille, 0);
+  //   backtracking(grille, 0);
 
-    fin = temps();
+  //   fin = temps();
 
+  //   afficher(grille);
+  //   ecrire(grille);
+
+  //   printf("\nLa grille n°%d a ete resolue en %lf secondes.\n\n", i+1, (fin - debut));
+  // }
+
+  charger(nom_fichier, grille, i);
+  printf("Grille %d\n", i+1);  
+  afficher(grille);
+
+  int *nbErreursLigne, *nbErreursColonne, maximumErreurs;
+  
+  do{
+    nbErreursLigne = nbErreursLignes(grille);
+    nbErreursColonne = nbErreursColonnes(grille);
+    maximumErreurs = maxErreurs(nbErreursLigne, nbErreursColonne);
+    for(i = 0; i < 9; i++)
+      remplirRandomRegion(grille, i);
+    for(i = 0; i < 9; i++)
+      printf("%d ", nbErreursLigne[i]);
+    printf("\n");
+    for(i = 0; i < 9; i++)
+      printf("%d ", nbErreursColonne[i]);
+    printf("\n");
     afficher(grille);
-    ecrire(grille);
+  }while(maximumErreurs != -1);
 
-    printf("\nLa grille n°%d a ete resolue en %lf secondes.\n\n", i+1, (fin - debut));
-  }
+  afficher(grille);
 
-
-  //Remplissage aléatoire
-  // remplirRandom(grille);
-  // afficher(grille);
-
-  //Calculs des erreurs en lignes et colonnes
-  // int *nbErreursLigne;
-  // int *nbErreursColonne;
-  // int maximumErreurs; //Renvoie la région à random
-
-  // do {
-  //   nbErreursLigne = nbErreursLignes(grille);
-  //   nbErreursColonne = nbErreursColonnes(grille);
-  //   maximumErreurs = maxErreurs(nbErreursLigne, nbErreursColonne);
-  //   remplirRandomRegion(grille, maximumErreurs);
-
-  //   printf("Région : %d.\n", maximumErreurs);
-  // } while (maximumErreurs != -1);
-
-  //Affichage du nombre d'erreurs
-  //printf("%d erreurs dans la région %d.\n", nbErreursRegionId, idRegion);
-  // for (i = 0; i < 9; i++)
-  //   printf("Il y a %d erreurs dans la ligne %d\n", nbErreursLigne[i], i+1);
-  // for (i = 0; i < 9; i++)
-   // printf("Il y a %d erreurs dans la colonne %d\n", nbErreursLigne[i], i+1);
-  // printf("Région : %d\n", maximumErreurs);
-  // remplirRandomRegion(grille, maximumErreurs);
-  // afficher(grille);
   return 0;
 }
