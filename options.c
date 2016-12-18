@@ -15,14 +15,14 @@
  * @return void
  */
 void afficherOptions(char *name) {
-  printf("Utilisation: %s [fichier] [options]", name);
+  printf("Utilisation: %s fichier [options]", name);
 
   printf("\n\n");
 
   printf("--help:      Affiche cette aide.\n");
   printf("--verbose:   Solve en détaillant les operations.\n");
-  printf("--timeAlert: Temps en millisecondes pour arrêter la resolution\n");
-  printf("             de la grille si le temps donne est depasse.\n");
+  printf("--timeAlert: Temps en secondes pour arrêter la resolution\n");
+  printf("             des grilles si le temps donne est depasse.\n");
 
   exit(0);
 }

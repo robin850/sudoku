@@ -49,11 +49,9 @@ int main(int argc, char** argv) {
       printf("Grille %d\n", i+1);
 
     debut = temps();
-    total += debut;
 
     // -> Résolution par back-tracking
     backtracking(grille, 0);
-
 
     // -> Tentative en Stochastique
     // do {
@@ -67,6 +65,7 @@ int main(int argc, char** argv) {
     // } while (maximumErreurs != -1);
 
     fin = temps();
+    total += fin - debut;
 
     if (print_opt)
       afficher(grille);
@@ -75,6 +74,11 @@ int main(int argc, char** argv) {
 
     if (print_opt)
       printf("\nLa grille n°%d a ete resolue en %lf secondes.\n\n", i+1, (fin - debut));
+
+    if (time_alert_opt && total >= time_alert) {
+      printf("%d grilles résolues en %lf secondes.", i+1, total);
+      exit(0);
+    }
   }
 
   return 0;
