@@ -171,6 +171,10 @@ do {
 
 Malheureusement, nous n'avons pas réussi à implémenter correctement cet algorithme car nous n'arrivons pas à sortir de la boucle `while`. Peu importe la difficulté de la grille, nous avons une boucle infinie qui nous empêche de la résoudre.
 
+## Réparition des tâches
+
+![](gantt.png)
+
 ## Bibliographie es différents algorithmes
 
 * https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
