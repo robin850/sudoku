@@ -175,6 +175,6 @@ Malheureusement, nous n'avons pas réussi à implémenter correctement cet algor
 
 ![](gantt.png)
 
-## Bibliographie es différents algorithmes
+## Bibliographie des différents algorithmes
 
 * https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
