@@ -12,8 +12,8 @@ type de grille proposé (i.e. grille facile ou complexe).
 
 Les différents algorithmes implémentés sont:
 
-* Backtracking
-* Le brute-forcing
+* Le backtracking
+* Le stochastique
 
 ## Méthodologie
 
@@ -111,7 +111,7 @@ else if (colonne < 6)
   region = ligne < 3 ? 1 : (ligne < 6 ? 4 : 7);
 else
   region = ligne < 3 ? 2 : (ligne < 6 ? 5 : 8);
-~~
+~~~
 
 Nous n'avons pas réalisé de réel *benchmark* de cette implémentation car la différence du temps de résolution avec une implémentation “classique” était visible d'un point de vue humain. Les performances étaient drastiquement moins bonnes ; une grille mettait parfois plus de deux secondes à être resolue.
 
