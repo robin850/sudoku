@@ -117,6 +117,60 @@ Nous n'avons pas réalisé de réel *benchmark* de cette implémentation car la 
 
 Au final, nous avons décidé de conserver tout de même la représentation sous forme de régions car elle était pratique pour l'implémentation de la résolution Stochastique.
 
+## Implémentation
+
+### Back-tracking
+
+L'implémentation du *backtracking* a été en réalité assez simple. On tente simplement de placer des valeurs et tant que la grille est valide, on réalisé des appels récursifs pour tenter de placer d'autres coups. L'avantage d'avoir implémenté le *backtracking*  en récursif est que du coup, il est très simple d'annuler des coups joués ; si la grille n'est pas valide, on remet simplement la valeur de la case à 0 et la ligne de remise à zéro n'est appelé que si aucun appel récursif n'a été fait (i.e. aucun coup valide n'a pu être placé).
+
+Dans un premier temps, nous pensions que l'ajout du champ `deBase` à la structure aurait pu être utile pour savoir si une case devait être remise à zéro ou non lorsque l'on annuler un coup mais au fur et à mesure de l'implémentation, l'utilisation du récursif permet d'éviter l'implémentation d'un tel champ. Il était cependant toujours nécessaire pour l'implémentation de l'algorithme stochastique. 
+
+### Algorithme stochastique
+
+#### Principe
+
+Dans un premier temps, cet algorithme va remplir aléatoirement les cases vides de la grille. Ensuite, il calculera le nombre d'erreurs en ligne et en colonne. Grâce à ces calculs, nous pouvons identifier la région où il y a le plus d'erreurs (en additionnant le nombre d'erreurs de chaque ligne et de chaque colonne de la région).
+
+Une fois cette région déterminée, il faudra la remplir aléatoirement sans doublons (donc de 1 à 9).
+
+Enfin, nous faisons boucler le programme afin de recalculer les erreurs, déterminer la région avec le plus d'erreurs et la remplir, jusqu'à ce qu'il n'y ait plus d'erreurs et donc que la grille soit résolue.
+
+#### Explication du code
+
+La fonction `remplirRandom` permet de remplir les éléments n'étant pas de base dans la grille. Nous pouvons vérifier cette condition grâce au booléen placé dans la structure `Case` :
+
+- Si le booléen est vrai, alors on ne touche pas à la valeur
+- S'l est faux, on peut le générer aléatoirement.
+
+La fonction `nbErreursLignes` (respectivement `nbErreursColonnes`) permet de calculer, pour chaque ligne (resp. colonne), le nombre d'erreurs. Pour chaque case de la ligne (resp. colonne), on compare la valeur avec celles du tableau `valeurs` qui contient les chiffres de 1 à 9. Lorsqu'on trouve que la valeur est égale à une des valeurs du tableau, on passe la cellule du tableau à 0. Le nombre de valeurs restantes du tableau sera donc le nombre d'erreurs de la ligne (resp. colonne).
+
+La fonction `maxErreurs` permet de déterminer la région qui a le plus d'erreurs. En effet, pour chaque région, elle calcule la somme des erreurs en ligne et en colonne. Ensuite, on cherche le maximum entre ces 9 valeurs, puis on renvoie l'id de la région où il y a le plus d'erreurs. 
+
+La fonction `remplirRandomRegion` permet de remplir aléatoirement une région sans aucun doublon. Pour cela, nous utilisons un tableau de valeurs allant de 1 à 9.
+
+Nous supprimons les valeurs déjà présentes dans la grille fournie (pour éviter les doublons), et nous plaçons le reste des valeurs aléatoirement dans les cases dont le booléen est à faux.
+
+#### Execution
+
+Pour résoudre une grille, nous faisons appel à toutes les fonctions citées ci-dessus.
+
+```c
+remplirRandom(grille); // Remplissage aléatoire de la grille
+nbErreursLigne   = nbErreursLignes(grille); //Calcul des erreurs en ligne
+nbErreursColonne = nbErreursColonnes(grille); //Calcul des erreurs en colonne
+maximumErreurs   = maxErreurs(nbErreursLigne, nbErreursColonne); // Détermination de la région avec le plus d'erreurs
+remplirRandomRegion(grille, maximumErreurs);//Génération aléatoire sans doublons de la région avec le plus d'erreurs
+
+do {
+  nbErreursLigne   = nbErreursLignes(grille);
+  nbErreursColonne = nbErreursColonnes(grille);
+  maximumErreurs   = maxErreurs(nbErreursLigne, nbErreursColonne);
+  remplirRandomRegion(grille, maximumErreurs);
+} while (maximumErreurs != -1); // Tant que la grille n'est pas valide, on boucle
+```
+
+Malheureusement, nous n'avons pas réussi à implémenter correctement cet algorithme car nous n'arrivons pas à sortir de la boucle `while`. Peu importe la difficulté de la grille, nous avons une boucle infinie qui nous empêche de la résoudre.
+
 ## Bibliographie es différents algorithmes
 
 * https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
